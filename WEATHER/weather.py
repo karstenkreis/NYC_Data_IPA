@@ -4,18 +4,19 @@ import urllib as ul
 import os
 import re
 import numpy as np
+import matplotlib.pyplot as plt
 
-####
-# This is a script for reading the hourly weather data of the central park weather station from 2013/7/1 - 2013/12/31 from www.wunderground.com.
-# The raw data is saved in csv files as well as cleaned and stored in a pandas dataframe..
-####
+
+#### This is a script for reading the hourly weather data of the central park weather station from 2013/7/1 - 2013/12/31 from www.wunderground.com
+#### The raw data is saved in csv files as well as cleaned and stored in a pandas dataframe
+
 
 
 ### Get the data from the website and save it as csv
-def download_data():
+def download_data(foldername):
 
     ### Make folder for saving the data
-    cmd = "mkdir WEATHERDATA"
+    cmd = "mkdir {}".format(foldername)
     os.system(cmd)
 
     ### Define number of days for month
@@ -36,7 +37,7 @@ def download_data():
 
             ### Prepare output file and write with pandas (could be done without pandas as well...)
             date_string2 = "{0}_{1}".format(i,j)
-            outfile = "WEATHERDATA/weather_data_2013_" + date_string2 + ".csv"
+            outfile = foldername + "/weather_data_2013_" + date_string2 + ".csv"
             df.to_csv(outfile)
 
             ### Be verbose
@@ -45,7 +46,7 @@ def download_data():
     ### Get the last day of June as well
     httpinextra = "http://www.wunderground.com/history/airport/KNYC/2013/6/30/DailyHistory.html?req_city=New+York&req_state=NY&req_statename=New+York&reqdb.zip=10001&reqdb.magic=1&reqdb.wmo=99999&MR=1&format=1"
     df = pd.read_csv(ul.urlopen(httpinextra))
-    outfileextra = "WEATHERDATA/weather_data_2013_6_30.csv"
+    outfileextra = foldername + "/weather_data_2013_6_30.csv"
     df.to_csv(outfileextra)
     print "Successfully read the data for 2013/6/30"
 
@@ -73,7 +74,7 @@ def data_to_pandas():
     for i in range(7,len(days_per_month)+7):
         for j in range(1,days_per_month[i]+1):
             date_string2 = "{0}_{1}".format(i,j)
-            dataframe = pd.read_csv("WEATHERDATA/weather_data_2013_" + date_string2 + ".csv", delimiter=",")
+            dataframe = pd.read_csv("WEATHERDATARAW/weather_data_2013_" + date_string2 + ".csv", delimiter=",")
 
             ### Increment day counter
             daycount += 1
@@ -178,7 +179,7 @@ def data_to_pandas():
     ### Go backwards through the list and resort times
     for i in range(len(dataframes)):
         if i == len(dataframes)-1:
-            dataframes[len(dataframes)-i-1] = pd.concat([pd.read_csv("WEATHERDATA/weather_data_2013_6_30.csv", delimiter=",").tail(n=1), dataframes[len(dataframes)-i-1].head(n=23)])
+            dataframes[len(dataframes)-i-1] = pd.concat([pd.read_csv("WEATHERDATARAW/weather_data_2013_6_30.csv", delimiter=",").tail(n=1), dataframes[len(dataframes)-i-1].head(n=23)])
         else:
             dataframes[len(dataframes)-i-1] = pd.concat([dataframes[len(dataframes)-i-2].tail(n=1), dataframes[len(dataframes)-i-1].head(n=23)])
 
@@ -204,10 +205,10 @@ def time_index(dataset):
     dataset["Month"] = pd.Series(timeindex.month, index=dataset.index)
 
     ### Set day of month, starting from 1 (default)
-    dataset["Day of month"] = pd.Series(timeindex.day, index=dataset.index)
+    dataset["DayOfMonth"] = pd.Series(timeindex.day, index=dataset.index)
 
     ### Set day of week, starting from 0 (default)
-    dataset["Day of week"] = pd.Series(timeindex.weekday, index=dataset.index)
+    dataset["DayOfWeek"] = pd.Series(timeindex.weekday, index=dataset.index)
 
     ### Set day of week, starting from 0 (default)
     dataset["Hour"] = pd.Series(timeindex.hour, index=dataset.index)
@@ -219,20 +220,23 @@ def time_index(dataset):
         numbers.append(i)
         days.append(i/24)
     dataset["Number"] = pd.Series(numbers, index=dataset.index)
-    dataset["Absolute day"] = pd.Series(days, index=dataset.index)
+    dataset["AbsoluteDay"] = pd.Series(days, index=dataset.index)
 
 
 
 ### Arrange and drop some columns
 def arrange_columns(dataset):
 
-    ### Drop some columns which be most probably not used
+    ### Drop some columns which will be most probably not used
     drop_cols = ['Dew PointF', 'Events', 'Gust SpeedMPH','Wind Direction','WindDirDegrees','DateUTC<br />','Unnamed: 0','TimeEST','TimeEDT']
     for i in range(len(drop_cols)):
         dataset.drop(drop_cols[i], axis=1, inplace=True)
 
     ### Rearrange columns
-    dataset = dataset[["Number", "Time", "Absolute day", "Month", "Day of month", "Day of week", "Hour", "TemperatureF", "PrecipitationIn", "Humidity", "Sea Level PressureIn", "VisibilityMPH", "Conditions", "Wind SpeedMPH"]]
+    dataset = dataset[["Number", "Time", "AbsoluteDay", "Month", "DayOfMonth", "DayOfWeek", "Hour", "TemperatureF", "PrecipitationIn", "Humidity", "Sea Level PressureIn", "VisibilityMPH", "Conditions", "Wind SpeedMPH"]]
+
+    ### Rename columns, no spaces
+    dataset.rename(columns={"Sea Level PressureIn": "SeaLevelPressureIn", "Wind SpeedMPH": "WindSpeedMPH"}, inplace=True)
 
     ### Done, return
     return dataset
@@ -248,38 +252,56 @@ def clean_corrupt_data(dataset):
         dataset.at[i, "TemperatureF"] = np.nan
     for i in list(dataset[dataset["VisibilityMPH"] == -9999.0].index.values):
         dataset.at[i, "VisibilityMPH"] = np.nan
-    for i in list(dataset[dataset["Sea Level PressureIn"] == -9999.0].index.values):
-        dataset.at[i, "Sea Level PressureIn"] = np.nan
+    for i in list(dataset[dataset["SeaLevelPressureIn"] == -9999.0].index.values):
+        dataset.at[i, "SeaLevelPressureIn"] = np.nan
 
     ### Now the Wind Speed data. First, "Calm" can be safely approximated by 0.0.
-    for i in list(dataset[dataset["Wind SpeedMPH"] == "Calm"].index.values):
-        dataset.at[i, "Wind SpeedMPH"] = "0.0"
+    for i in list(dataset[dataset["WindSpeedMPH"] == "Calm"].index.values):
+        dataset.at[i, "WindSpeedMPH"] = "0.0"
 
     ### For the -9999.0 issue, we have to preceed differently as before because we don't deal with floats here
     ### Somehow it only works when changing first to string type, then perform change, then change to float
-    dataset[['Wind SpeedMPH'] ] = dataset[['Wind SpeedMPH']].astype(str)
-    for i in list(dataset[dataset["Wind SpeedMPH"] == "-9999.0"].index.values):
-        dataset.at[i, "Wind SpeedMPH"] = "NaN"
-    dataset[['Wind SpeedMPH'] ] = dataset[['Wind SpeedMPH']].astype(float)
+    dataset[['WindSpeedMPH'] ] = dataset[['WindSpeedMPH']].astype(str)
+    for i in list(dataset[dataset["WindSpeedMPH"] == "-9999.0"].index.values):
+        dataset.at[i, "WindSpeedMPH"] = "NaN"
+    dataset[['WindSpeedMPH'] ] = dataset[['WindSpeedMPH']].astype(float)
 
 
 
-### Class holding some evaluations
-class Eval_Visual(object):
+### write dataset to csv file with provided filename
+def write_to_csv(dataset, filename):
+
+    dataset.to_csv(filename)
+
+
+
+### Class holding evaluations and visualizations (implement more if necessary)
+class Evaluations(object):
+
     def __init__(self, data):
         self._data = data
 
-    def eval1(self):
-        pass
-        ### TO DO!
+    ### Print properties
+    def properties(self):
+        print "DESCRIBE:"
+        print self._data.describe(), "\n"
+        print "DTYPES:"
+        print self._data.dtypes, "\n"
 
-    def visual1(self):
-        pass
-        ### TO DO!
+    ### Draw numerical data as cruves
+    def curve(self, first, *rest):
+        self._data[first].plot()
+        for string in list(rest):
+            self._data[string].plot()
+        plt.show()
 
-    ### Implement evaluations and visualizations of the weatherdata if necessary...
-
-
+    ### Print numbers of uniques in non-numerical data
+    def uniques(self, first, *rest):
+        print "Column:", first
+        print self._data[first].value_counts(), "\n"
+        for string in list(rest):
+            print string
+            print self._data[string].value_counts(), "\n"
 
 
 
@@ -289,8 +311,9 @@ class Eval_Visual(object):
 ########################
 if __name__ == "__main__":
 
-    ### Get data (only necessary if not yet downloaded)
-    #download_data()
+    ### Get data, only necessary if not yet downloaded)
+    if not os.path.isdir("WEATHERDATARAW"):
+        download_data("WEATHERDATARAW")
 
     ### Read into pandas frames
     weather = data_to_pandas()
@@ -301,5 +324,20 @@ if __name__ == "__main__":
     ### Drop some irrelevant data and arrange columns
     weather = arrange_columns(weather)
 
-    ### Change the -9999.0 in the windspeed to NaN
+    ### Clean some corrupt data
     clean_corrupt_data(weather)
+
+    ### Write final clean dataset to csv, only necessary if not yet done)
+    if not os.path.isfile("clean_weather.csv"):
+        write_to_csv(weather, "clean_weather.csv")
+
+
+    ### Have a quick look at the data to make sure everything looks reasonable
+    ### This could be deleted as it has no further functionality
+    SomeEvals = Evaluations(weather)
+    ### Check basic properties
+    SomeEvals.properties()
+    ### Check the non numerical data
+    SomeEvals.uniques("Conditions")
+    ### Check temperature, draw curve
+    SomeEvals.curve("TemperatureF")
