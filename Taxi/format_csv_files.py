@@ -23,7 +23,8 @@ for name in fileList:  # go over all file in list
             if fileInd > 1:  # don't include header except once in the beginning
                 continue
             vals = [x.strip() for x in vals]
-            header = ['Day of year', 'Day of Month', 'Day of week', 'Month', 'Hour'] + vals  # this will be the header line
+            header = ['pickup_date', 'pickup_day_of_year', 'pickup_day_of_Month', 'pickup_day_of_week', 'pickup_month', 'pickup_hour'] +\
+                list(map(str.strip, vals))  # this will be the header line
             writer.writerow(header)
             continue
 
@@ -40,7 +41,7 @@ for name in fileList:  # go over all file in list
         if not((month == 7) and ((dayOfMonth == 1) or (dayOfMonth == 1))):  # only July 1st and 4th
             continue
 
-        outLine = [dayOfYear, dayOfMonth, dayOfWeek, month, hour] + vals  # generate the output line
+        outLine = [pickupDate.strftime('%Y-%m-%d %H:%M:%S'), dayOfYear, dayOfMonth, dayOfWeek, month, hour] + vals  # generate the output line
 
         writer.writerow(outLine)  # write line to file
         # nOut = (len(line) - 3)/entriesPerLine
