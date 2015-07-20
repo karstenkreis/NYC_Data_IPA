@@ -1,4 +1,7 @@
 #!/usr/bin/python
+__author__ = "karstenk"
+
+### Imports
 import pandas as pd
 import urllib as ul
 import os
@@ -275,6 +278,13 @@ def write_to_csv(dataset, filename):
 
 
 
+### pickle dataset with provided filename
+def write_pickle(dataset, filename):
+
+    dataset.to_pickle(filename)
+
+
+
 ### Class holding evaluations and visualizations (implement more if necessary)
 class Evaluations(object):
 
@@ -300,7 +310,7 @@ class Evaluations(object):
         print "Column:", first
         print self._data[first].value_counts(), "\n"
         for string in list(rest):
-            print string
+            print "Column:", string
             print self._data[string].value_counts(), "\n"
 
 
@@ -311,7 +321,7 @@ class Evaluations(object):
 ########################
 if __name__ == "__main__":
 
-    ### Get data, only necessary if not yet downloaded)
+    ### Get data, only necessary if not yet downloaded
     if not os.path.isdir("WEATHERDATARAW"):
         download_data("WEATHERDATARAW")
 
@@ -327,9 +337,13 @@ if __name__ == "__main__":
     ### Clean some corrupt data
     clean_corrupt_data(weather)
 
-    ### Write final clean dataset to csv, only necessary if not yet done)
+    ### Write final clean dataset to csv, only necessary if not yet done
     if not os.path.isfile("clean_weather.csv"):
         write_to_csv(weather, "clean_weather.csv")
+
+    ### Write final clean dataset to csv, only necessary if not yet done
+    if not os.path.isfile("clean_weather.pkl"):
+        write_pickle(weather, "clean_weather.pkl")
 
 
     ### Have a quick look at the data to make sure everything looks reasonable
@@ -341,3 +355,4 @@ if __name__ == "__main__":
     SomeEvals.uniques("Conditions")
     ### Check temperature, draw curve
     SomeEvals.curve("TemperatureF")
+    SomeEvals.curve("PrecipitationIn")
