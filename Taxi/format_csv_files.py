@@ -8,10 +8,11 @@ writer = csv.writer(fileOut, delimiter=',')  # use this to write to csv output f
 
 filePath = './NYC Taxi Data/NYC Yellow Taxi Data/2014/Trips/'  # where the data is stored
 fileList = os.listdir(filePath)  # get file list
-fileList = [fileList[9]]  # only july. [fileList[i] for i in [9, 10, 11, 1, 2, 3]]  # Only use July-Dec files
+fileList = [fileList[i] for i in [9, 10, 11, 1, 2, 3]]  # Only use July-Dec files
 chosenEntries = range(7, 14)  # here I pick which columns I want to use in the output csv
 fileInd = 0  # file index counter, only used to indicate whether it's the first file or not (don't want to keep headers, except for the first file)
 for name in fileList:  # go over all file in list
+    fileInd += 1
     fileIn = open(filePath + '/' + name, 'r')
     reader = csv.reader(fileIn, delimiter=',')
 
@@ -24,7 +25,7 @@ for name in fileList:  # go over all file in list
                 continue
             vals = [x.strip() for x in vals]
             header = ['pickup_date', 'pickup_day_of_year', 'pickup_day_of_Month', 'pickup_day_of_week', 'pickup_month', 'pickup_hour'] +\
-                list(map(str.strip, vals))  # this will be the header line
+                vals  # this will be the header line
             writer.writerow(header)
             continue
 
@@ -37,9 +38,6 @@ for name in fileList:  # go over all file in list
         dayOfMonth = pickupDate.day
         month = pickupDate.month
         hour = pickupDate.hour
-
-        if not((month == 7) and ((dayOfMonth == 1) or (dayOfMonth == 1))):  # only July 1st and 4th
-            continue
 
         outLine = [pickupDate.strftime('%Y-%m-%d %H:%M:%S'), dayOfYear, dayOfMonth, dayOfWeek, month, hour] + vals  # generate the output line
 
