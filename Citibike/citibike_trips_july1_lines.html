@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<head>
+   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+   <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+   <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+
+   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+   <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+   <link rel="stylesheet" href="http://rawgit.com/lvoogdt/Leaflet.awesome-markers/2.0/develop/dist/leaflet.awesome-markers.css">
+   <script src="http://rawgithub.com/lvoogdt/Leaflet.awesome-markers/2.0/develop/dist/leaflet.awesome-markers.js"></script>
+
+
+   <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/MarkerCluster.Default.css">
+   <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/MarkerCluster.css">
+   <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/leaflet.markercluster-src.js"></script>
+   <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/leaflet.markercluster.js"></script>
+
+   <link rel="stylesheet" href="http://birdage.github.io/Leaflet.awesome-markers/dist/leaflet.awesome.rotate.css">
+
+   
+   
+   
+   
+
+   <style>
+
+      html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      #map {
+        position:absolute;
+        top:0;
+        bottom:0;
+        right:0;
+        left:0;
+      }
+
+   </style>
+</head>
+
+<body>
+
+   <div class="folium-map" id="folium_2c3d3a8761904002847cfb75c36f888d" style="width: 750px; height: 750px"></div>
+
+   <script>
+
+      
+
+      var base_tile = L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.jpg', {
+          maxZoom: 18,
+          minZoom: 1,
+          attribution: 'Data analysis by <a href="https://github.com/kkreis/NYC_Data_IPA"> <font color="red">NYC_Data_IPA</font></a> | Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.'
+      });
+
+      var baseLayer = {
+        "Base Layer": base_tile
+      };
+
+      /*
+      addition of the wms layers
+      */
+
+      
+
+      /*
+      addition of the tile layers
+      */
+      
+
+      /*
+      list of layers to be added
+      */
+      var layer_list = {
+      
+      };
+
+      /*
+      Bounding box.
+      */
+      var southWest = L.latLng(-90, -180),
+          northEast = L.latLng(90, 180),
+          bounds = L.latLngBounds(southWest, northEast);
+
+      /*
+      Creates the map and adds the selected layers
+      */
+      var map = L.map('folium_2c3d3a8761904002847cfb75c36f888d', {
+                                       center:[40.74, -73.99],
+                                       zoom: 12,
+                                       maxBounds: bounds,
+                                       layers: [base_tile]
+                                     });
+
+      L.control.layers(baseLayer, layer_list).addTo(map);
+
+      //cluster group
+      var clusteredmarkers = L.markerClusterGroup();
+      //section for adding clustered markers
+      
+      //add the clustered markers to the group anyway
+      map.addLayer(clusteredmarkers);
+
+      
+
+      
+
+      
+      var latLngs = [ [40.76695317, -73.98169333],  [40.74144387, -73.97536082], ];
+var line_1 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_1);
+      
+      var latLngs = [ [40.7153379, -74.01658354],  [40.70834698, -74.01713445], ];
+var line_2 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_2);
+      
+      var latLngs = [ [40.73172428, -74.00674436],  [40.7403432, -73.98955109], ];
+var line_3 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_3);
+      
+      var latLngs = [ [40.739323, -74.008119],  [40.7568001, -73.98291153], ];
+var line_4 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_4);
+      
+      var latLngs = [ [40.73912601, -73.97973776],  [40.75510267, -73.97498696], ];
+var line_5 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_5);
+      
+      var latLngs = [ [40.71622644, -73.98261206],  [40.73401143, -74.00293877], ];
+var line_6 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_6);
+      
+      var latLngs = [ [40.69308257, -73.97178913],  [40.69196566, -73.9813018], ];
+var line_7 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_7);
+      
+      var latLngs = [ [40.74147286, -73.98320928],  [40.74173969, -73.99415556], ];
+var line_8 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_8);
+      
+      var latLngs = [ [40.75645824, -73.99372222],  [40.70706456, -74.00731853], ];
+var line_9 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_9);
+      
+      var latLngs = [ [40.74780373, -73.9734419],  [40.71602118, -73.99974372], ];
+var line_10 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_10);
+      
+      var latLngs = [ [40.71743998, -74.00583475],  [40.74317449, -74.00366443], ];
+var line_11 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_11);
+      
+      var latLngs = [ [40.76009437, -73.99461843],  [40.74195138, -74.00803013], ];
+var line_12 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_12);
+      
+      var latLngs = [ [40.73038599, -74.00214988],  [40.73912601, -73.97973776], ];
+var line_13 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_13);
+      
+      var latLngs = [ [40.72740794, -73.98142006],  [40.74173969, -73.99415556], ];
+var line_14 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_14);
+      
+      var latLngs = [ [40.74487634, -73.99529885],  [40.73587678, -73.98205027], ];
+var line_15 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_15);
+      
+      var latLngs = [ [40.73038599, -74.00214988],  [40.71450451, -74.00562789], ];
+var line_16 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_16);
+      
+      var latLngs = [ [40.75044999, -73.99481051],  [40.76695317, -73.98169333], ];
+var line_17 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_17);
+      
+      var latLngs = [ [40.75640548, -73.9900262],  [40.74315566, -73.97434726], ];
+var line_18 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_18);
+      
+      var latLngs = [ [40.70037867, -73.99548059],  [40.746647, -73.993915], ];
+var line_19 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_19);
+      
+      var latLngs = [ [40.73172428, -74.00674436],  [40.73172428, -74.00674436], ];
+var line_20 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_20);
+      
+      var latLngs = [ [40.73587678, -73.98205027],  [40.73704984, -73.99009296], ];
+var line_21 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_21);
+      
+      var latLngs = [ [40.71748752, -74.0104554],  [40.689888, -73.981013], ];
+var line_22 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_22);
+      
+      var latLngs = [ [40.72743423, -73.99379025],  [40.73038599, -74.00214988], ];
+var line_23 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_23);
+      
+      var latLngs = [ [40.72453734, -73.98185424],  [40.73028666, -73.9907647], ];
+var line_24 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_24);
+      
+      var latLngs = [ [40.7489006, -73.97604882],  [40.75992262, -73.97648516], ];
+var line_25 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_25);
+      
+      var latLngs = [ [40.7361967, -74.00859207],  [40.71450451, -74.00562789], ];
+var line_26 = L.polyline(latLngs,{
+color: '#FFC266',
+weight: 2,
+opacity: 0.8,
+});
+      map.addLayer(line_26);
+      
+
+      
+
+      
+
+      
+
+   </script>
+
+</body>
